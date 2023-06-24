@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  app:
+    container_name: app-bot-whatsapp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+  db:
+    image: mysql:8.0
+    container_name: mysql-bot-whatsapp
+    restart: always
+    env_file:
+      - .env.${ENV:-dev}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - '~/Documents/workspace/DATA-DB/mysql_data:/var/lib/mysql'
